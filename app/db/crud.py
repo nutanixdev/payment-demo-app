@@ -9,7 +9,8 @@ class PaymentCrud:
         db_payment = models.Payment(
             amount=payment.amount,
             currency=payment.currency,
-            description=payment.description
+            description=payment.description,
+            payee=payment.payee
         )
 
         db.add(db_payment)

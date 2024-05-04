@@ -4,6 +4,7 @@ from iso4217 import find_currency, CurrencyNotFoundError
 
 
 class PaymentBase(BaseModel):
+    payee: str
     amount: float = Field(
         gt=0, description="The amount must be greater than zero")
     currency: str = Field(min_length=3, max_length=3,
