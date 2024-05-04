@@ -36,7 +36,7 @@ class ValidationErrorLoggingRoute(APIRoute):
 
 
 app = FastAPI(
-    title="Nutanix .NEXT Demo",
+    title="Nutanix Cloud Native Demo",
     description="Demo Payment API based on FastAPI with Swagger and Sqlachemy[postgres]",
     version="1.0.0"
 )
@@ -61,7 +61,7 @@ def get_settings():
     return config.Settings()
 
 # Read .env
-@app.get("/info")
+@app.get("/info", include_in_schema=False)
 async def info(settings: Annotated[config.Settings, Depends(get_settings)]):
     return {
         "account_name": settings.account_name,
@@ -69,7 +69,7 @@ async def info(settings: Annotated[config.Settings, Depends(get_settings)]):
     }
 
 # index page, welcome
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def index(request: Request, settings: Annotated[config.Settings, Depends(get_settings)]):
     return templates.TemplateResponse(
         name="index.html", context={
@@ -85,7 +85,7 @@ class FormData(BaseModel):
     amount: float
     description: str
 
-@app.post("/process_form_data")
+@app.post("/process_form_data", include_in_schema=False)
 async def process_form_data(form_data: FormData):
     print(form_data.dict())
     async with httpx.AsyncClient() as client:
