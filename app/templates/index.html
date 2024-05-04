@@ -38,13 +38,13 @@
     <form class="form-container" onsubmit="return saveFormData()">
         <div>
             <label for="payee">To:</label>
-            <input type="text" id="payee" name="payee">
+            <input type="text" id="payee" name="payee" required>
         </div>
         <div>
             <label for="currency">Currency:</label>
             <select id="currency" name="currency">
                 {% for item in currencies %}
-                <option value="{{ item }}">{{ item }}</option>
+                <option value="{{ item.lower() }}">{{ item }}</option>
                 {% endfor %}
             </select>
         </div>
