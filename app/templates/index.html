@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
-<title>Payment System</title>
-<script>
-    function saveFormData() {
-        var formData = {};
-        var inputs = document.querySelectorAll("input, select, textarea");
-        for (var i = 0; i < inputs.length; i++) {
-            if (inputs[i].type !== "submit") {
-                formData[inputs[i].name] = inputs[i].value;
-            }        }
-        var jsonData = JSON.stringify(formData);
 
-        // Sending JSON data to FastAPI backend using AJAX
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/process_form_data", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                console.log("Form data sent successfully!");
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+    <title>Payment System</title>
+    <script>
+        function saveFormData() {
+            var formData = {};
+            var inputs = document.querySelectorAll("input, select, textarea");
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].type !== "submit") {
+                    formData[inputs[i].name] = inputs[i].value;
+                }
             }
-        };
-        xhr.send(jsonData);
-    }
-</script>
+            var jsonData = JSON.stringify(formData);
+
+            // Sending JSON data to FastAPI backend using AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/process_form_data", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log("Form data sent successfully!");
+                }
+            };
+            xhr.send(jsonData);
+        }
+    </script>
 </head>
+
 <body>
-    <div id="title"><h1>Mano's Bank Account</h1></div>
+    <div id="title">
+        <h1>{{ account_name }}'s Bank Account</h1>
+    </div>
     <form class="form-container" onsubmit="return saveFormData()">
         <div>
             <label for="payee">To:</label>
@@ -38,8 +43,9 @@
         <div>
             <label for="currency">Currency:</label>
             <select id="currency" name="currency">
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
+                {% for item in currencies %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
             </select>
         </div>
         <div>
@@ -53,4 +59,5 @@
         <button type="submit">Submit</button>
     </form>
 </body>
+
 </html>

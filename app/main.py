@@ -1,14 +1,19 @@
 import uvicorn
+import config
+import httpx
 from typing import Callable
+from typing_extensions import Annotated
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, Body
 from fastapi.exceptions import RequestValidationError
 from fastapi.routing import APIRoute
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
-import httpx
+from functools import lru_cache
+
+
 
 from db import models, schemas
 from db.crud import PaymentCrud
@@ -50,11 +55,28 @@ async def create_payment(payment_request: schemas.PaymentCreate = Body(), db: Se
 
     return await PaymentCrud.create(db=db, payment=payment_request)
 
+# Load config just once
+@lru_cache
+def get_settings():
+    return config.Settings()
+
+# Read .env
+@app.get("/info")
+async def info(settings: Annotated[config.Settings, Depends(get_settings)]):
+    return {
+        "account_name": settings.account_name,
+        "currencies": settings.currencies,
+    }
+
 # index page, welcome
 @app.get("/")
-async def index(request: Request):
+async def index(request: Request, settings: Annotated[config.Settings, Depends(get_settings)]):
     return templates.TemplateResponse(
-        name="index.html", context={"request": request}
+        name="index.html", context={
+            "request": request, 
+            "currencies": settings.currencies.split(","), 
+            "account_name": settings.account_name
+        }
     )
 
 class FormData(BaseModel):
