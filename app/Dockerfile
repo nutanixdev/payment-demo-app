@@ -1,4 +1,8 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.11
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.12-bookworm
+
+LABEL org.opencontainers.image.source=https://github.com/nutanixdev/payment-demo-app
+LABEL org.opencontainers.image.description="Payment Demo App"
+LABEL org.opencontainers.image.licenses=MIT
 
 ENV PYTHONUNBUFFERED True
 
